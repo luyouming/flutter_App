@@ -1,8 +1,12 @@
 import 'dart:convert';
-
-import 'package:famous_app/models/local/channel_item.dart';
 import 'package:flutter/material.dart';
+
 import 'package:famous_app/constant/constant.dart';
+import 'package:famous_app/models/local/channel_item.dart';
+import 'package:famous_app/widgets/news_list.dart';
+// import 'package:famous_app/models/network/news_list.dart';
+// import 'package:famous_app/api/network.dart';
+
 import 'about_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,7 +22,10 @@ class _HomePageState extends State<HomePage>
   // tab 数据
   List<ChannelItem> channels = [];
 
-  late TabController _tabController;
+  // 新闻数据
+  List<NewsList> newsList = [];
+
+  TabController? _tabController;
 
   // 初始化数据
   _initData() async {
@@ -27,6 +34,14 @@ class _HomePageState extends State<HomePage>
         .loadString('assets/config/channel.json');
 
     listData = json.decode(data);
+
+    // 请求新闻列表数据
+    String netData = await DefaultAssetBundle.of(context)
+        .loadString('assets/config/mock.json');
+
+    List<dynamic> netListData = json.decode(netData)['T1348647853363'];
+
+    // _tabController = TabController(length: 0, vsync: this);
 
     setState(() {
       // listData.forEach((tmp) => channels.add(ChannelItem.fromJson(tmp)));
@@ -42,7 +57,7 @@ class _HomePageState extends State<HomePage>
         // int _curIdx = _tabController!.index;
         // var offset = _tabController!.animation?.value;
         // if (_curIdx == offset) {
-        //    print('当前点击的是${_tabController?.index}个tab');
+        //   print('当前点击的是${_tabController?.index}个tab');
         // }
 
         // 第一次点击 重复两次解决方案2 动画正在执行  indexIsChanging 为true 结束为false
@@ -50,8 +65,21 @@ class _HomePageState extends State<HomePage>
           print('当前点击的是第${_tabController?.index}个tab');
         }
       });
+
+      for (var i = 0; i < channels.length; i++) {
+        newsList.add(NewsList(channel: channels[i], newsList: netListData));
+      }
     });
   }
+
+  // 初始化列表数据
+  // Widget _initChannelList() {
+  //   return TabBarView(
+  //       controller: _tabController,
+  //       children: channels.map((ChannelItem channel) {
+  //         return NewsList(channel: channel);
+  //       }).toList());
+  // }
 
   @override
   void initState() {
@@ -89,7 +117,8 @@ class _HomePageState extends State<HomePage>
                 }),
               )
             ]),
-        body: const Text('内容区'),
+        // body: _initChannelList()
+        body: TabBarView(controller: _tabController, children: newsList),
       ),
     );
   }

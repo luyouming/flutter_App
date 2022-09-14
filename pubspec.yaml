@@ -32,3 +32,4 @@ flutter:
   uses-material-design: true # icon
   assets: # 静态资源 构建时会去这里拿，生成到assets中
     - assets/config/channel.json
+    - assets/config/mock.json
