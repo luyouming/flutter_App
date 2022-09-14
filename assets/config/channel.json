@@ -1,0 +1,13 @@
+[{
+    "name": "推荐",
+    "key": "recommend",
+     "id": "channel_1"
+},{
+    "name": "资讯",
+    "key": "information",
+     "id": "channel_2"
+},{
+    "name": "财经",
+    "key": "financial",
+     "id": "channel_3"
+}]
